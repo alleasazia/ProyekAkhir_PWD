@@ -2,16 +2,29 @@
 session_start();
 include '../config/koneksi.php';
 
-$nama = $_POST['nama_barang'];
-$deskripsi = $_POST['deskripsi'];
-$user = $_SESSION['username'];
+$kategori   = $_POST['kategori'];
+$nama       = $_POST['nama_barang'];
+$jumlah     = $_POST['jumlah'];
+$deskripsi  = $_POST['deskripsi'];
+$user_id    = $_SESSION['user_id'];
 
-// ambil id user
-$data = mysqli_query($conn, "SELECT id FROM user WHERE username='$user'");
-$u = mysqli_fetch_assoc($data);
-$user_id = $u['id'];
+$nama_gambar = $_FILES['gambar']['name'];
+$tmp_gambar  = $_FILES['gambar']['tmp_name'];
 
-mysqli_query($conn, "INSERT INTO barang VALUES('', '$nama', '$deskripsi', '$user_id')");
+$gambar_baru = time() . "_" . $nama_gambar;
 
-header("Location: ../index.php");
+$tujuan = "../uploads/" . $gambar_baru;
+
+if (move_uploaded_file($tmp_gambar, $tujuan)) {
+    $query = "INSERT INTO barang (kategori, nama_barang, jumlah, deskripsi, user_id, gambar) 
+              VALUES ('$kategori', '$nama', '$jumlah', '$deskripsi', '$user_id', '$gambar_baru')";
+    
+    if (mysqli_query($conn, $query)) {
+        header("Location: ../alamat.php");
+    } else {
+        echo "Gagal simpan ke database!";
+    }
+} else {
+    echo "Gagal upload! Cek lagi folder 'uploads' kamu sudah ada belum di luar folder barang?";
+}
 ?>

@@ -1,91 +1,122 @@
-<?php session_start(); ?>
+<?php
+session_start();
+include '../config/koneksi.php';
+
+if (isset($_SESSION['username'])) {
+    header("Location: ../dashboard.php");
+    exit();
+}
+
+?>
 
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - ShareGoods</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/style.css">
 
     <style>
-        body {
-            background-color: #f8f9fa;
+        .form-control {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            color: var(--text-dark);
+            font-size: 0.95rem;
         }
 
-        /* Margin manual dihapus, biarkan Flexbox yang bekerja */
-        .card-login {
-            border-radius: 20px;
+        .form-control::placeholder {
+            color: #adb5bd;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(1, 61, 68, 0.1);
+            border-color: var(--primary-green);
+            background: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .login-box {
+                flex-direction: column;
+            }
+
+            .login-image {
+                display: none;
+            }
+
+            .login-form-container {
+                padding: 40px 30px;
+            }
+
+            .navbar-floating {
+                width: 90%;
+                padding: 10px 20px;
+            }
         }
     </style>
 </head>
 
 <body>
+    <div class="login-wrapper">
+        <div class="login-box">
 
-<div class="main-wrapper d-flex flex-column min-vh-100">
+            <div class="login-image"></div>
 
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid nav-container">
-            <a class="logo text-decoration-none" href="../index.php">ShareGoods</a>
+            <div class="login-form-container">
 
-            <div class="collapse navbar-collapse justify-content-center">
-                <div class="menu">
-                    <a href="../index.php">Home</a>
-                    <a href="../AboutMe.php">Tentang</a>
-                    <a href="../kontak.php">Kontak</a>
-                </div>
-            </div>
+                <h3 class="login-title">Login</h3>
+                <p class="login-subtitle">Silakan masuk ke akun ShareGoods kamu</p>
 
-            <div class="nav-right">
-                <a href="#" class="btn-custom">Masuk</a>
-            </div>
-        </div>
-    </nav>
+                <?php if (isset($_GET['error'])): ?>
+                    <div class="alert alert-danger text-center p-2 mb-4" style="font-size: 0.9rem; border-radius: 8px;">
+                        <?php echo htmlspecialchars($_GET['error']); ?>
+                    </div>
+                <?php endif; ?>
 
-    <div class="container login-section flex-grow-1 d-flex align-items-center justify-content-center p-3">
-        <div class="row w-100 justify-content-center">
-            <div class="col-12 col-md-8 col-lg-5">
+                <form action="proses_login.php" method="POST">
 
-                <div class="card shadow border-0 p-4 p-md-5 card-login w-100">
+                    <div class="mb-3">
+                        <input type="text" name="username"
+                            value="<?php echo isset($_COOKIE['username']) ? htmlspecialchars($_COOKIE['username']) : ''; ?>"
+                            class="form-control"
+                            placeholder="Username" required>
+                    </div>
 
-                    <form action="proses_login.php" method="POST">
-                        <h2 class="text-center fw-bold mb-4">Login</h2>
+                    <div class="mb-4">
+                        <input type="password" name="password"
+                            class="form-control"
+                            placeholder="Password" required>
+                    </div>
 
-                        <input type="text" name="username" 
-                        value="<?php echo isset($_COOKIE['username']) ? htmlspecialchars($_COOKIE['username']) : ''; ?>" 
-                        class="form-control mb-3"
-                        placeholder="Username" required>
-
-                        <input type="password" name="password" 
-                        class="form-control mb-3"
-                        placeholder="Password" required>
-
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" name="remember" id="remember">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="remember" id="remember"
+                                <?php if (isset($_COOKIE['username'])) echo 'checked'; ?>>
                             <label class="form-check-label" for="remember">
                                 Ingat saya
                             </label>
                         </div>
+                    </div>
 
-                        <button type="submit" class="btn-custom w-100 py-2">
-                            Login
-                        </button>
-                    </form>
-
-                    <p class="text-center mt-4 mb-0">
-                        Belum punya akun? 
-                        <a href="register.php" class="text-success fw-semibold text-decoration-none">
-                            Daftar
-                        </a>
+                    <button type="submit" class="btn btn-login w-100">Login</button>
+                    <p class="text-center mb-0" style="font-size: 0.9rem; color: #6c757d; margin-top: 1.5rem;">
+                        Belum punya akun?
+                        <a href="register.php" class="text-link" style="text-decoration: underline;">Daftar</a>
                     </p>
-
-                </div>
+                </form>
 
             </div>
         </div>
     </div>
 
-</div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

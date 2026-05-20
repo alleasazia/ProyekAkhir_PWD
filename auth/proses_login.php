@@ -2,36 +2,46 @@
 session_start();
 include '../config/koneksi.php';
 
+if (!isset($_POST['username']) || !isset($_POST['password'])) {
+    header("Location: login.php");
+    exit();
+}
+
 $username = mysqli_real_escape_string($conn, $_POST['username']);
 $password = $_POST['password'];
 
-// ambil data user
-$data = mysqli_query($conn, "SELECT * FROM user WHERE username='$username'");
-$user = mysqli_fetch_assoc($data);
+$query = "SELECT * FROM user WHERE username='$username'";
+$data = mysqli_query($conn, $query);
 
-if ($user) {
+if (!$data) {
+    die("Query error: " . mysqli_error($conn));
+}
+
+if (mysqli_num_rows($data) > 0) {
+    $user = mysqli_fetch_assoc($data);
 
     if (password_verify($password, $user['password'])) {
+        
+        session_regenerate_id(true);
 
-        // ✅ SIMPAN ID USER
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
 
-        // remember me
         if (isset($_POST['remember'])) {
             setcookie("username", $user['username'], time() + (60 * 60 * 24), "/");
         } else {
             setcookie("username", "", time() - 3600, "/");
         }
 
-        header("Location: ../form.php");
+        header("Location: ../dashboard.php");
         exit();
 
     } else {
-        echo "Password salah!";
+        header("Location: login.php?error=Username atau Password salah");
+        exit();
     }
-
 } else {
-    echo "User tidak ditemukan!";
+    header("Location: login.php?error=Username atau Password salah");
+    exit();
 }
 ?>
