@@ -15,10 +15,9 @@ if (isset($_GET['id'])) {
                     title: "Berhasil!",
                     text: "Barang kamu sudah dihapus.",
                     icon: "success",
-                    confirmButtonColor: "#064e4b", // Warna Dark Teal (senada footer)
+                    confirmButtonColor: "#064e4b",
                     confirmButtonText: "Sip, Mantap!"
                 }).then(function() {
-                    // Balik ke halaman barang saya
                     window.location.href = "../barangsaya.php";
                 });
             }, 100);
