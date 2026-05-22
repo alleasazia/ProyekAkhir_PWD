@@ -92,7 +92,7 @@ if (isset($_SESSION['username'])) {
                     <div class="mb-4">
                         <input type="password" name="password"
                             class="form-control"
-                            placeholder="Password" required>
+                            placeholder="Minimal 8 Karakter" required>
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center mb-4">

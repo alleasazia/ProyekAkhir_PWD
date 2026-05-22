@@ -84,7 +84,7 @@ session_start();
                     <div class="mb-4">
                         <input type="password" name="password"
                             class="form-control"
-                            placeholder="Password" required minlength="8">
+                            placeholder="Minimal 8 Karakter" required minlength="8">
                     </div>
 
                     <button type="submit" class="btn btn-auth w-100 mb-3">Daftar</button>
